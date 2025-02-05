@@ -96,7 +96,7 @@ class ElabFTW:
         resp = self.session.post(self.host_url + "/api/v2/items", json=item_data)
         if resp.status_code == 201:
             id = int(resp.headers["location"].split("/")[-1])
-            html_url = (f"{self.host_url}database.php?mode=view&id={id}",)
+            html_url = (f"{self.host_url}/database.php?mode=view&id={id}",)
             metadata_json = json.dumps(metadata)
 
             data = {"title": title, "body": body, "metadata": metadata_json}
@@ -126,3 +126,19 @@ class ElabFTW:
         url = f"{self.host_url}/api/v2/items/{item_id}"
         resp = self.session.patch(url, json=item_data)
         return resp.json()
+
+    def create_ressource_category(self, category_title):
+        """
+        Create a new category on the ElabFTW server.
+
+        Args:
+            category_title (str): The title of the category to be created.
+
+        Returns:
+            dict: A dictionary containing the data of the created category.
+        """
+        category_data = {"title": category_title}
+        resp = self.session.post(self.host_url + "/api/v2/items_types", json=category_data)
+        if resp.status_code == 201:
+            print(f"Category created: {category_title}")
+            return resp.headers["location"].split("/")[-1]
