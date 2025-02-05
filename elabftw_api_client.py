@@ -23,7 +23,9 @@ class ElabFTW:
 
         """
         print("Initializing ElabFTW class with user_agent_string: " + user_agent_string)
-        self.host_url = host_url
+        # normalize self.host_url to remove everything after the last TLD ending
+        # e.g. https://elabftw.example.com/login -> https://elabftw.example.com
+        self.host_url = host_url.rsplit("/", 1)[0]
         self.session = requests.Session()
         self.session.headers.update(
             {"Authorization": apikey, "User-Agent": user_agent_string}
@@ -51,7 +53,7 @@ class ElabFTW:
                 )
                 sys.exit(1)
             else:
-                return "Connection to ElabFTW successful"
+                return f"Connection to ElabFTW at {self.host_url} successful"
 
     def get_ressources(self):
         """Get all items from the ElabFTW server.
